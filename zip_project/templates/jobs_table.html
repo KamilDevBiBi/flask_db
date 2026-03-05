@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
-    <title>Document</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block jobs_table %}
+    <h2 style="text-align: center;">Works log</h2>
     {% for i in range(jobs_list | length) %}
         {% set item = jobs_list[i] %}
         <h3>Action {{item.id}}</h3>
@@ -36,5 +31,4 @@
             </tbody>
         </table>
     {% endfor %}
-</body>
-</html>
+{% endblock %}
