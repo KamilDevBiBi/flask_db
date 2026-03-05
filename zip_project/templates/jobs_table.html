@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+    <title>Document</title>
+</head>
+<body>
+    {% for i in range(jobs_list | length) %}
+        {% set item = jobs_list[i] %}
+        <h3>Action {{item.id}}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title of activity</th>
+                    <th>Team Leader</th>
+                    <th>Duration</th>
+                    <th>List of collaborators</th>
+                    <th>Is finished</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>{{item.job}}</th>
+                    <th>{{leader_names[i]}}</th>
+                    <th>{{item.work_size}} hours</th>
+                    <th>{{item.collaborators}}</th>
+                    <th>{% if item.is_finished %}
+                            Is finished
+                        {% else %}
+                            Is not finished
+                        {% endif %}
+                    </th>
+                </tr>
+            </tbody>
+        </table>
+    {% endfor %}
+</body>
+</html>
