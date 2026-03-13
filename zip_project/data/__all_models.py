@@ -1,25 +1,25 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean, ForeignKey
-from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
+from sqlalchemy.orm import relationship
+from flask_login import UserMixin
+from werkzeug.security import check_password_hash, generate_password_hash
 from .db_session import SqlAlchemyBase
 
 
-class User(SqlAlchemyBase):
+class User(SqlAlchemyBase, UserMixin):
     __tablename__ = 'users'
 
     id = Column(Integer, 
                            primary_key=True, autoincrement=True)
-    surname = Column(String)
     name = Column(String)
-    age = Column(Integer)
-    position = Column(String)
-    speciality = Column(String)
-    address = Column(String)
     email = Column(String, unique=True)
-    hashed_passqord = Column(String)
-    modified_date = Column(DateTime)
+    hashed_password = Column(String)
 
-    def __repr__(self):
-        return f"<colonist> {self.id} {self.surname} {self.name}"
+    def set_password(self, password):
+        self.hashed_password = generate_password_hash(password)
+    
+    def check_password(self, password):
+        return check_password_hash(self.hashed_password, password)
+
 
 class Jobs(SqlAlchemyBase):
     __tablename__ = 'jobs'
@@ -34,4 +34,15 @@ class Jobs(SqlAlchemyBase):
     is_finished = Column(Boolean)
 
     user = relationship('User')
-    
+
+
+class Departament(SqlAlchemyBase):
+    __tablename__ = "departaments"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    title = Column(String)
+    chief = Column(Integer, ForeignKey("users.id"))
+    members = Column(String)
+    email = Column(String)
+
+    user = relationship("User")
