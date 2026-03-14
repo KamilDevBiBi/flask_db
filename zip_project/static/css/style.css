@@ -10,15 +10,12 @@ thead th {
     background-color: rgb(164, 164, 164);
     padding: 0px 5px;
 }
-tbody th {
+tbody td {
     background-color: rgb(218, 207, 238);
     text-align: center;
     padding: 20px 5px;
 }
 
-tbody th:last-child{
-    background-color: rgb(205, 184, 224);
-}
 form.login_form {
     margin-left: auto;
     margin-right: auto;
@@ -42,4 +39,12 @@ header h1,
 header p {
     margin: 0;
     line-height: 60px;
+}
+
+.not_finished{
+    background-color: rgb(205, 184, 224);
+}
+
+.finished_job{
+    background-color: rgb(200, 255, 237);
 }
