@@ -43,6 +43,6 @@ class Departament(SqlAlchemyBase):
     title = Column(String)
     chief = Column(Integer, ForeignKey("users.id"))
     members = Column(String)
-    email = Column(String)
+    email = Column(String, unique=True)
 
     user = relationship("User")
