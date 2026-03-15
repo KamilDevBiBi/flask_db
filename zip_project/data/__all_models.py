@@ -21,12 +21,20 @@ class User(SqlAlchemyBase, UserMixin):
         return check_password_hash(self.hashed_password, password)
 
 
+class JobCategory(SqlAlchemyBase):
+    __tablename__ = "job_categories"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(String)
+
+
 class Jobs(SqlAlchemyBase):
     __tablename__ = 'jobs'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     team_leader = Column(Integer, ForeignKey('users.id'))
     job = Column(String)
+    hazard_category = Column(Integer, ForeignKey("job_categories.id"))
     work_size = Column(Integer)
     collaborators = Column(String)
     start_date = Column(DateTime)
@@ -34,6 +42,7 @@ class Jobs(SqlAlchemyBase):
     is_finished = Column(Boolean)
 
     user = relationship('User')
+    category = relationship('JobCategory')
 
 
 class Departament(SqlAlchemyBase):
