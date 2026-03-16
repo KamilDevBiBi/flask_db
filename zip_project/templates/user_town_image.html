@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block town_image %}
+    <h2>Nostalgy</h2>
+    <h3>{{user.name}}</h3>
+    <h3>Hometown {{user.from_city}}</h3>
+    <div class="town_image">
+        <img src="{{ url_for('static', filename='img/map_' ~ user.id ~ '.png') }}" alt="Oops">
+    </div>
+{% endblock %}

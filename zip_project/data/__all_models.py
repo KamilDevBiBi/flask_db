@@ -1,17 +1,19 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Boolean
 from sqlalchemy.orm import relationship
-from flask_login import UserMixin
-from werkzeug.security import check_password_hash, generate_password_hash
 from .db_session import SqlAlchemyBase
 
+from flask_login import UserMixin
+from sqlalchemy_serializer import SerializerMixin
+from werkzeug.security import check_password_hash, generate_password_hash
 
-class User(SqlAlchemyBase, UserMixin):
+
+class User(SqlAlchemyBase, UserMixin, SerializerMixin):
     __tablename__ = 'users'
 
-    id = Column(Integer, 
-                           primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String)
     email = Column(String, unique=True)
+    from_city = Column(String)
     hashed_password = Column(String)
 
     def set_password(self, password):
@@ -21,14 +23,14 @@ class User(SqlAlchemyBase, UserMixin):
         return check_password_hash(self.hashed_password, password)
 
 
-class JobCategory(SqlAlchemyBase):
+class JobCategory(SqlAlchemyBase, SerializerMixin):
     __tablename__ = "job_categories"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String)
 
 
-class Jobs(SqlAlchemyBase):
+class Jobs(SqlAlchemyBase, SerializerMixin):
     __tablename__ = 'jobs'
 
     id = Column(Integer, primary_key=True, autoincrement=True)

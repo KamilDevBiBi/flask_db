@@ -48,3 +48,11 @@ header p {
 .finished_job{
     background-color: rgb(200, 255, 237);
 }
+
+h2, h3{
+    text-align: center;
+}
+
+.town_image{
+    text-align: center;
+}

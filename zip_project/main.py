@@ -1,9 +1,13 @@
-from flask import Flask, render_template, redirect, request, abort
+from flask import Flask, render_template, redirect, request, abort, make_response, jsonify
 from forms import LoginForm, RegisterForm, addJobForm, addDepartmentForm
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 
 from data import db_session
 from data.__all_models import User, Jobs, Departament
+from data.jobs_api import blueprint as blueprint_job
+from data.user_api import blueprint as blueprint_user
+
+import requests
 
 app = Flask(__name__)
 
@@ -155,6 +159,7 @@ def edit_job(job_id):
             
     return render_template("add_job.html", form=form)
 
+
 @app.route("/deljob/<int:job_id>")
 @login_required
 def remove_job(job_id):
@@ -265,8 +270,67 @@ def remove_department(dep_id):
         abort(404)
 
 
+@app.route('/users_show/<int:user_id>')
+def show_user_town_image(user_id):
+    session = db_session.create_session()
+    user = session.query(User).filter(User.id == user_id).first()
+
+    if not user:
+        abort(404)
+    
+    geocode = user.from_city
+    if not geocode:
+        abort(400)
+
+    geocode_url = 'http://geocode-maps.yandex.ru/1.x/?'
+    api_key = '8013b162-6b42-4997-9691-77b7074026e0'
+    
+    geocoder_request = f'{geocode_url}apikey={api_key}&geocode={geocode}&format=json'
+
+    response = requests.get(geocoder_request)
+    if not response:
+        abort(400)
+
+    json_response = response.json()
+    results = json_response["response"]["GeoObjectCollection"]["featureMember"]
+    if len(results) <= 0:
+        abort(400)
+    
+    toponym = results[0]["GeoObject"]
+    toponym_coodrinates = toponym["Point"]["pos"].split()
+    
+    static_url = 'https://static-maps.yandex.ru/v1?'
+    static_apikey = 'f3a0fe3a-b07e-4840-a1da-06f18b2ddf13'
+    params = {
+        'apikey': static_apikey,
+        'll': ','.join(toponym_coodrinates),
+        'spn': '0.02,0.02'
+    }
+
+    response = requests.get(static_url, params=params)
+    if not response:
+        abort(400)
+
+    with open(f'zip_project/static/img/map_{user_id}.png', "wb") as file:
+        file.write(response.content)
+    
+    return render_template('user_town_image.html', user=user)
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
+
+@app.errorhandler(400)
+def bad_request(_):
+    return make_response(jsonify({'error': 'Bad Request'}), 400)
+
+
 def main():
     db_session.global_init("zip_project/db/auth_user.db")
+    app.register_blueprint(blueprint_job)
+    app.register_blueprint(blueprint_user)
     app.run(host="127.0.0.1", port="8080")
 
 
