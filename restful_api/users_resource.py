@@ -5,7 +5,7 @@ from flask import jsonify
 from data import db_session
 from data.__all_models import User
 
-from .reqparser import parser
+from .reqparser import user_parser as parser
 
 def abort_if_user_not_found(user_id):
     session = db_session.create_session()

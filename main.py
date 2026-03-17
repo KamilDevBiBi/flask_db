@@ -10,13 +10,17 @@ from data.user_api import blueprint as blueprint_user
 
 import requests
 from restful_api.users_resource import UsersResource, UsersListResource
+from restful_api.jobs_resource import jobsResource, jobsListResource
 from flask_restful import Api
 
 app = Flask(__name__)
 api = Api(app)
 
-api.add_resource(UsersListResource, '/api/v2/users')
 api.add_resource(UsersResource, '/api/v2/users/<int:user_id>')
+api.add_resource(UsersListResource, '/api/v2/users')
+
+api.add_resource(jobsResource, '/api/v2/jobs/<int:job_id>')
+api.add_resource(jobsListResource, '/api/v2/jobs')
 
 
 login_manager = LoginManager()
